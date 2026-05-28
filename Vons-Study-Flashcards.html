@@ -1262,19 +1262,14 @@ function buildCategoryBar() {
 
 function sortWithPhotosFirst(arr) {
   return [...arr].sort((a, b) => {
-    const aHasPhoto = a.q && a.q.startsWith('MENU KNOWLEDGE') && (() => {
-      const name = a.q.split('\n')[2];
-      return !!cardImages[name];
-    })();
-    const bHasPhoto = b.q && b.q.startsWith('MENU KNOWLEDGE') && (() => {
-      const name = b.q.split('\n')[2];
-      return !!cardImages[name];
-    })();
-    // Within the same category, photo cards first; otherwise preserve original order
-    if (a.cat === b.cat) {
-      if (aHasPhoto && !bHasPhoto) return -1;
-      if (!aHasPhoto && bHasPhoto) return 1;
-    }
+    const aIsMK = a.q && a.q.startsWith('MENU KNOWLEDGE');
+    const bIsMK = b.q && b.q.startsWith('MENU KNOWLEDGE');
+    if (aIsMK && !bIsMK) return -1;
+    if (!aIsMK && bIsMK) return 1;
+    const aHasPhoto = aIsMK && !!cardImages[a.q.split('\n')[2]];
+    const bHasPhoto = bIsMK && !!cardImages[b.q.split('\n')[2]];
+    if (aHasPhoto && !bHasPhoto) return -1;
+    if (!aHasPhoto && bHasPhoto) return 1;
     return 0;
   });
 }
